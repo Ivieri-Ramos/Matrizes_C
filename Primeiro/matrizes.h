@@ -44,6 +44,8 @@ matriz_resultado copiar_matrizes(matriz *matriz_destino, const matriz *matriz_or
 matriz_resultado criar_inversa(matriz *matriz_destino, const matriz *matriz_original);
 matriz_resultado matriz_fix_zero(matriz *matriz_orig);
 matriz_resultado vetor_para_matriz(matriz *matriz_dest, const double *vetor, size_t tam_vetor);
+const char* retornar_mensagem(matriz_resultado result);
+bool validar_operacao(matriz_resultado result);
 
 //daqui pra baixo todas são relacionadas com funcoes_mat.c
 void funcao_2();

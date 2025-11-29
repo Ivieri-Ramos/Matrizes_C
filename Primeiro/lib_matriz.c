@@ -55,7 +55,7 @@ void preencher_matriz(matriz *matriz_preencher) { //essa função preenche apena
 void free_matriz(matriz *matriz) {
     matriz -> mat_linhas = 0;
     matriz -> mat_colunas = 0;
-    free(matriz -> dados[0]);
+    if (matriz -> dados != NULL) free(matriz -> dados[0]);
     free(matriz -> dados);
     matriz -> dados = NULL;
     /*
@@ -280,4 +280,27 @@ matriz_resultado vetor_para_matriz(matriz *matriz_dest, const double *vetor, con
     }
     memcpy(matriz_dest -> dados[0], vetor, tam_vetor * sizeof(double));
     return MAT_SUCESSO;
+}
+
+const char* retornar_mensagem(const matriz_resultado result) {
+    switch (result) {
+        case MAT_ERRO_PONTEIRO_NULO: return "Tentou passar dado nulo";
+        case MAT_ERRO_DIMENSAO_INCOMPATIVEL: return "Tamanhos incompativeis";
+        case MAT_ERRO_ALOCACAO: return "Sem memória disponivel";
+        case MAT_ERRO_OVERLAP: return "Tentou passar um destino igual a origem";
+        case MAT_NAO_IDENTIDADE: return "Matriz nao e identidade";
+        case MAT_SINGULAR: return "Matriz e singular";
+        case MAT_ERRO_PARAMETRO_INVALIDO: return "Tamanho invalido";
+        case MAT_SUCESSO: return "";
+        default: return "Erro desconhecido: lembre o programador de adicionar aqui";
+    }
+}
+
+bool validar_operacao(const matriz_resultado result) {
+    if (result != MAT_SUCESSO) {
+        const char* retorno = retornar_mensagem(result);
+        fprintf(stderr, "%s", retorno);
+        return false;
+    }
+    return true;
 }

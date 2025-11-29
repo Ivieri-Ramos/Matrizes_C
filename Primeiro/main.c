@@ -1,9 +1,12 @@
-#include <stdio.h>
+#include <locale.h>
 
 #include "matrizes.h"
+#include "utils.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <locale.h>
 
 #define TAMANHO_TESTE 2
 
@@ -12,14 +15,6 @@
  e deixar a parte logica em outros arquivos, como funcoes_mat.c
  */
 int main() {
-    char *texto = (char*) malloc(100);
-
-    for (int i = 0; i < 10; i++) {
-        texto[i] = (char) (0.0523);
-    }
-    texto[10] = '\0';
-    puts(texto);
-    free(texto);
-    texto = NULL;
+    funcao_3();
     return 0;
 }
