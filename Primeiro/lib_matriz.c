@@ -7,7 +7,7 @@
 
 #define INTERVALO_ZERO 1e-9 //isso e para que quando for 0,0000000001 ele valide corretamente
 
-void imprimir_mat(const matriz *matriz_imprimir) {
+void imprimir_mat(const matriz *matriz_imprimir) { //essa função só imprime a matriz
     if (matriz_imprimir -> dados == NULL) return;
     for (size_t i = 0; i < matriz_imprimir -> mat_linhas; i++) {
         for (size_t j = 0; j < matriz_imprimir -> mat_colunas; j++) {
@@ -17,7 +17,7 @@ void imprimir_mat(const matriz *matriz_imprimir) {
     }
 }
 
-void matriz_init(matriz *matriz) {
+void matriz_init(matriz *matriz) { //matriz_init inicia matriz com valores zero
     matriz -> mat_linhas = 0;
     matriz -> mat_colunas = 0;
     matriz -> dados = NULL;
@@ -25,26 +25,26 @@ void matriz_init(matriz *matriz) {
 
 matriz_resultado criar_matriz(matriz *matriz, const size_t linhas, const size_t colunas) {
     if (linhas == 0 || colunas == 0) return MAT_ERRO_PARAMETRO_INVALIDO;
-    matriz_init(matriz);
-    matriz -> dados = (double **) malloc(sizeof(int *) * linhas);
+    matriz_init(matriz); //iniciamos a matriz
+    matriz -> dados = (double **) malloc(sizeof(double *) * linhas);
     if (matriz -> dados == NULL) {
         return MAT_ERRO_ALOCACAO;
-    }
+    } //alocamos um vetor de ponteiros de double
     double *dados_ligados = (double *) malloc(sizeof(double) * linhas * colunas);
     if (dados_ligados == NULL) {
         free(matriz -> dados);
         matriz -> dados = NULL;
         return MAT_ERRO_ALOCACAO;
-    }
+    } //alocamos um bloco gigante de double
     for (size_t i = 0; i < linhas; i++) {
         matriz -> dados[i] = dados_ligados + (i * colunas);
-    }
+    } //e por fim, ligamos cada pedaço dos ponteiros nas suas respectivas colunas
     matriz -> mat_colunas = colunas;
     matriz -> mat_linhas = linhas;
     return MAT_SUCESSO;
 }
 
-void preencher_matriz(matriz *matriz_preencher) {
+void preencher_matriz(matriz *matriz_preencher) { //essa função preenche apenas para testes
     for (size_t i = 0; i < matriz_preencher -> mat_linhas; i++) {
         for (size_t j = 0; j < matriz_preencher -> mat_colunas; j++) {
             matriz_preencher -> dados[i][j] = rand() % 50;
@@ -53,9 +53,16 @@ void preencher_matriz(matriz *matriz_preencher) {
 }
 
 void free_matriz(matriz *matriz) {
+    matriz -> mat_linhas = 0;
+    matriz -> mat_colunas = 0;
     free(matriz -> dados[0]);
     free(matriz -> dados);
     matriz -> dados = NULL;
+    /*
+     * função para limpar a matriz, zeramos colunas e linhas, depois, liberamos
+     * o bloco imenso de double e então o vetor de ponteiros, e declaramos
+     * o vetor de ponteiros como NULL, para prevenir dangling pointers
+     */
 }
 
 matriz_resultado soma_matriz(matriz *matriz_destino, const matriz *matriz_s1, const matriz *matriz_s2) {
@@ -180,10 +187,18 @@ matriz_resultado criar_inversa(matriz *matriz_destino, const matriz *matriz_orig
     criar_matriz(&matriz_clone, tamanho_max, tamanho_max);
     copiar_matrizes(&matriz_clone, matriz_original);
     set_identidade(matriz_destino);
+    //esse bloco anterior nós criamos uma matriz que irá servir como o apoio na criação da inversa
     for (size_t k = 0; k < tamanho_max; k++) {
+        //primeiro, vemos se o valor absoluto i == j seja muito pequeno, que seria algo como 0.0000000001
         if (fabs(matriz_clone.dados[k][k]) < INTERVALO_ZERO) {
             bool trocou = false;
             for (size_t j = k + 1; j < tamanho_max; j++) {
+                /*
+                 *esse bloco serve para caso exista um número fora desse pequeno
+                 *intervalo, nós possamos substituir o pivô por ele, usando as
+                 *operações elementos L(k) troca por L(atual), se não existir,
+                 *logo a inversa também não existe
+                */
                 if (fabs(matriz_clone.dados[j][k]) > INTERVALO_ZERO) {
                     for (size_t i = 0; i < tamanho_max; i++) {
                         const double temp_orig = matriz_clone.dados[k][i];
@@ -192,6 +207,7 @@ matriz_resultado criar_inversa(matriz *matriz_destino, const matriz *matriz_orig
                         const double temp_dest = matriz_destino -> dados[k][i];
                         matriz_destino -> dados[k][i] = matriz_destino -> dados[j][i];
                         matriz_destino -> dados[j][i] = temp_dest;
+                        //note que aqui é uma operação elementar
                     }
                     trocou = true;
                     break;
@@ -200,13 +216,14 @@ matriz_resultado criar_inversa(matriz *matriz_destino, const matriz *matriz_orig
             if (!trocou) {
                 free_matriz(&matriz_clone);
                 return MAT_SINGULAR;
+                //se não encontramos, a matriz é singular
             }
         }
         const double div = matriz_clone.dados[k][k];
         for (size_t i = 0; i < tamanho_max; i++) {
             matriz_clone.dados[k][i] /= div;
             matriz_destino -> dados[k][i] /= div;
-        }
+        } //esse for serve para podermos transformar o pivô em 1
         for (size_t i = 0; i < tamanho_max; i++) {
             if (i == k) continue;
             const double fator = matriz_clone.dados[i][k];
@@ -215,6 +232,7 @@ matriz_resultado criar_inversa(matriz *matriz_destino, const matriz *matriz_orig
                 matriz_clone.dados[i][j] -= fator * matriz_clone.dados[k][j];
                 matriz_destino -> dados[i][j] -= fator * matriz_destino -> dados[k][j];
             }
+            //e por fim, nós zeramos a matriz_clone, nas linhas abaixo e acima do pivô atual
         }
     }
     matriz_fix_zero(matriz_destino);
@@ -252,6 +270,7 @@ matriz_resultado matriz_fix_zero(matriz *matriz_orig) {
 }
 
 matriz_resultado vetor_para_matriz(matriz *matriz_dest, const double *vetor, const size_t tam_vetor) {
+    //essa função serve para criarmos uma matriz na "mão"
     if (matriz_dest -> dados == NULL || vetor == NULL) {
         return MAT_ERRO_PONTEIRO_NULO;
     }

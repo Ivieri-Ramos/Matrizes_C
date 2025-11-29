@@ -14,6 +14,12 @@ typedef enum {
     MAT_NAO_IDENTIDADE, //quando a matriz nao for a identidade
     MAT_SINGULAR, //se a matriz nao possuir inversa
 } matriz_resultado;
+/*
+ *esse matriz_resultado e so para retornar erros personalizados, ex:
+ *caso por engano tentasse passar uma matriz com dados nulo, ficaria mais
+ *facil de descobrir o problema, mas ainda nao fiz uma função responsável
+ *para revelar esses problemas
+ */
 
 typedef struct matriz {
     size_t mat_linhas;
@@ -21,6 +27,9 @@ typedef struct matriz {
     double **dados;
 } matriz;
 
+//matriz é o corpo de tudo presente no código
+
+//todas essas funções daqui até em baixo são todas relacionadas com lib_matriz.c
 void imprimir_mat(const matriz *matriz_imprimir);
 void matriz_init(matriz *matriz);
 void preencher_matriz(matriz *matriz_preencher);
@@ -36,6 +45,7 @@ matriz_resultado criar_inversa(matriz *matriz_destino, const matriz *matriz_orig
 matriz_resultado matriz_fix_zero(matriz *matriz_orig);
 matriz_resultado vetor_para_matriz(matriz *matriz_dest, const double *vetor, size_t tam_vetor);
 
+//daqui pra baixo todas são relacionadas com funcoes_mat.c
 void funcao_2();
 void funcao_3();
 
