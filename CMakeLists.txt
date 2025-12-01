@@ -9,4 +9,5 @@ add_executable(AlgebraLinear
         Primeiro/lib_matriz.c
         Primeiro/funcoes_mat.c
         Primeiro/utils.c
-        Primeiro/utils.h)
+        Primeiro/utils.h
+        Primeiro/funcoes_mat.h)

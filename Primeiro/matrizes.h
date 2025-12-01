@@ -11,8 +11,9 @@ typedef enum {
     MAT_ERRO_DIMENSAO_INCOMPATIVEL, // Tentar somar 3x3 com 4x4
     MAT_ERRO_PARAMETRO_INVALIDO, // Ex: linhas ou colunas iguais a 0
     MAT_ERRO_OVERLAP, //Não pode usar o destino igual ao operandos
-    MAT_NAO_IDENTIDADE, //quando a matriz nao for a identidade
-    MAT_SINGULAR, //se a matriz nao possuir inversa
+    MAT_NAO_IDENTIDADE, //quando a matriz não for a identidade
+    MAT_SINGULAR, //se a matriz não possuir inversa
+    MAT_ERRO_OPERACAO, //se a função chamada teve algum erro durante o processo, como falha de alocação
 } matriz_resultado;
 /*
  *esse matriz_resultado e so para retornar erros personalizados, ex:
@@ -27,13 +28,16 @@ typedef struct matriz {
     double **dados;
 } matriz;
 
+#define INIT_ALL(...) matriz_init_all(__VA_ARGS__, NULL)
+#define FREE_ALL(...) matriz_free_all(__VA_ARGS__, NULL)
+
 //matriz é o corpo de tudo presente no código
 
 //todas essas funções daqui até em baixo são todas relacionadas com lib_matriz.c
-void imprimir_mat(const matriz *matriz_imprimir);
 void matriz_init(matriz *matriz);
 void preencher_matriz(matriz *matriz_preencher);
 void free_matriz(matriz *matriz);
+matriz_resultado imprimir_mat(const matriz *matriz_imprimir);
 matriz_resultado criar_matriz(matriz *matriz, size_t linhas, size_t colunas);
 matriz_resultado soma_matriz(matriz *matriz_destino, const matriz *matriz_s1, const matriz *matriz_s2);
 matriz_resultado multiplicar_matriz(matriz *matriz_destino, const matriz *matriz_m1, const matriz *matriz_m2);
@@ -46,9 +50,10 @@ matriz_resultado matriz_fix_zero(matriz *matriz_orig);
 matriz_resultado vetor_para_matriz(matriz *matriz_dest, const double *vetor, size_t tam_vetor);
 const char* retornar_mensagem(matriz_resultado result);
 bool validar_operacao(matriz_resultado result);
+void matriz_init_all(matriz *primeira, ...);
+void matriz_free_all(matriz *primeira, ...);
 
 //daqui pra baixo todas são relacionadas com funcoes_mat.c
 void funcao_2();
-void funcao_3();
 
 #endif //ALGEBRALINEAR_MATRIZES_H

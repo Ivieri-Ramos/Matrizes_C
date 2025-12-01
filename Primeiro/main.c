@@ -2,6 +2,7 @@
 
 #include "matrizes.h"
 #include "utils.h"
+#include "funcoes_mat.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,6 +16,10 @@
  e deixar a parte logica em outros arquivos, como funcoes_mat.c
  */
 int main() {
-    funcao_3();
+    clock_t inicio = clock();
+    if (!validar_operacao(funcao_3())) exit(EXIT_FAILURE);
+    clock_t fim = clock();
+    const double tempo_usado = ((double) (fim - inicio) / CLOCKS_PER_SEC);
+    printf("Tempo de uso: %.6lf\n", tempo_usado);
     return 0;
 }

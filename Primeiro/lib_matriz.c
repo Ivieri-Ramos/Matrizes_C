@@ -4,17 +4,19 @@
 #include <string.h>
 #include <stdbool.h>
 #include <math.h>
+#include <stdarg.h>
 
 #define INTERVALO_ZERO 1e-9 //isso e para que quando for 0,0000000001 ele valide corretamente
 
-void imprimir_mat(const matriz *matriz_imprimir) { //essa função só imprime a matriz
-    if (matriz_imprimir -> dados == NULL) return;
+matriz_resultado imprimir_mat(const matriz *matriz_imprimir) { //essa função só imprime a matriz
+    if (matriz_imprimir -> dados == NULL) return MAT_ERRO_PONTEIRO_NULO;
     for (size_t i = 0; i < matriz_imprimir -> mat_linhas; i++) {
         for (size_t j = 0; j < matriz_imprimir -> mat_colunas; j++) {
             printf("%.4lf ", matriz_imprimir -> dados[i][j]);
         }
         printf("\n");
     }
+    return MAT_SUCESSO;
 }
 
 void matriz_init(matriz *matriz) { //matriz_init inicia matriz com valores zero
@@ -299,8 +301,30 @@ const char* retornar_mensagem(const matriz_resultado result) {
 bool validar_operacao(const matriz_resultado result) {
     if (result != MAT_SUCESSO) {
         const char* retorno = retornar_mensagem(result);
-        fprintf(stderr, "%s", retorno);
+        fprintf(stderr, "%s\n", retorno);
         return false;
     }
     return true;
+}
+
+void matriz_init_all(matriz *primeira, ...) {
+    va_list args;
+    va_start(args, primeira);
+    matriz *mat_atual = primeira;
+    while (mat_atual != NULL) {
+        matriz_init(mat_atual);
+        mat_atual = va_arg(args, matriz*);
+    }
+    va_end(args);
+}
+
+void matriz_free_all(matriz *primeira, ...) {
+    va_list args;
+    va_start(args, primeira);
+    matriz *mat_atual = primeira;
+    while (mat_atual != NULL) {
+        free_matriz(mat_atual);
+        mat_atual = va_arg(args, matriz*);
+    }
+    va_end(args);
 }
