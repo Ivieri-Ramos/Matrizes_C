@@ -12,7 +12,7 @@ matriz_resultado imprimir_mat(const matriz *matriz_imprimir) { //essa função s
     if (matriz_imprimir -> dados == NULL) return MAT_ERRO_PONTEIRO_NULO;
     for (size_t i = 0; i < matriz_imprimir -> mat_linhas; i++) {
         for (size_t j = 0; j < matriz_imprimir -> mat_colunas; j++) {
-            printf("%.4lf ", matriz_imprimir -> dados[i][j]);
+            printf("%.6lf ", matriz_imprimir -> dados[i][j]);
         }
         printf("\n");
     }

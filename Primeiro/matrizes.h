@@ -53,7 +53,4 @@ bool validar_operacao(matriz_resultado result);
 void matriz_init_all(matriz *primeira, ...);
 void matriz_free_all(matriz *primeira, ...);
 
-//daqui pra baixo todas são relacionadas com funcoes_mat.c
-void funcao_2();
-
 #endif //ALGEBRALINEAR_MATRIZES_H

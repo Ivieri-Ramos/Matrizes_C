@@ -9,17 +9,55 @@
 #include <time.h>
 #include <locale.h>
 
-#define TAMANHO_TESTE 2
+#include "calcular_diferenca.h"
 
-/*o main eu deixei livre so para testes, entretanto, a ideia seria usar ele
+/*
+ *o main eu deixei livre so para testes, entretanto, a ideia seria usar ele
  *justamente para colocar o switch case de menu aqui e fazer o negócio funcionar
  e deixar a parte logica em outros arquivos, como funcoes_mat.c
  */
+
 int main() {
-    clock_t inicio = clock();
-    if (!validar_operacao(funcao_4())) exit(EXIT_FAILURE);
-    clock_t fim = clock();
-    const double tempo_usado = ((double) (fim - inicio) / CLOCKS_PER_SEC);
-    printf("Tempo de uso: %.6lf\n", tempo_usado);
+    calcular_erro_absoluto();
+    /*
+    setlocale(LC_ALL, "Portuguese.UTF-8");
+    int opcao;
+    do{
+        limpar_tela();
+        printf("menu cálculo\n");
+        printf("1- função 2\n");
+        printf("2- função 3\n");
+        printf("3- função 4\n");
+        printf("0- sair\n");
+        scanf("%d", &opcao);
+
+        switch (opcao){
+            case 1: {
+                printf("\n>> rodando a função 2 <<\n");
+                printf("%lf\n",funcao_2(0));
+                break;
+            }
+            case 2: {
+                printf("\n>> rodando a função 3 <<\n");
+                funcao_3(0);
+                break;
+            }
+            case 3: {
+                printf("\n>> rodando a função 4 <<\n");
+                funcao_4(0);
+                break;
+            }
+            case 0: {
+                printf("\n>> encerrando o programa <<\n");
+                break;
+            }
+            default:
+                printf("opção invalida");
+                break;
+        }
+        limpar_buffer();
+        limpar_buffer();
+    } while(opcao != 0);
+    */
     return 0;
 }

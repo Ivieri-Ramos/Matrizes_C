@@ -7,7 +7,7 @@
 if ((status = (func)) != MAT_SUCESSO) goto matriz_cleanup
 
 //função_4 é a f4(x)
-matriz_resultado funcao_4() {
+matriz_resultado descobrir_f4() {
     matriz matX, matY, matXT, matXtX, matXtX_inv, matXtY, matB;
     INIT_ALL(&matX, &matY, &matXT, &matXtX, &matXtX_inv, &matXtY, &matB);
     matriz_resultado status = MAT_SUCESSO;
@@ -60,17 +60,7 @@ matriz_resultado funcao_4() {
         return status;
 }
 
-void funcao_2() {
-    #define VALOR_C 0.0410468
-
-    int x = 0;
-    //essa função é só aplicando f2(x)
-    for (size_t i = 0; i < 6; i++, x += 3) {
-        printf("%.2lf\n", VALOR_C * pow(x - 3, 2) + 19.8);
-    }
-}
-
-matriz_resultado funcao_3() {
+matriz_resultado descobrir_f3() {
     /*
      * a função f3(x) funciona exatamente igual a como foi explicado na
      * função 4, entretanto, nos apenas usamos menos variáveis
@@ -114,3 +104,10 @@ matriz_resultado funcao_3() {
         FREE_ALL(&matX, &matXT, &matY, &matXtX, &matXtX_inv, &matXtY, &matB);
         return status;
 }
+
+double funcao_1(const double t) {return pow((t - 3), 2) + 19.8;}
+double funcao_2(const double t) {return 0.0410468 * pow((t - 3), 2) + 19.8;}
+double funcao_3(const double t) {return pow((0.052346 * t), 2) + (-0.447888 * t) + 21.5;}
+double funcao_4(const double t) {return pow((0.045833 * t), 2) + (-0.318929 * t) + 20.960714;}
+
+#undef TRY
