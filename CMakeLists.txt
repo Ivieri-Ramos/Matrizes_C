@@ -11,8 +11,9 @@ add_executable(AlgebraLinear
         Primeiro/utils.c
         Primeiro/utils.h
         Primeiro/funcoes_mat.h
-        Primeiro/calcular_diferenca.c
-        Primeiro/calcular_diferenca.h)
+        Primeiro/respostas_trabalho.c
+        Primeiro/respostas_trabalho.h
+        Primeiro/menu_completo.c)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 
