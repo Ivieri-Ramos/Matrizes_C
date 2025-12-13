@@ -19,7 +19,7 @@ void menu_sexto_ex() {
         printf("5 - Qual a melhor funcao? (Ex 5)\n");
         printf("0 - Sair\n");
         printf("Escolha: ");
-        const opcoes_menu_ex op = retornar_op_menu(escolher_opcao());
+        const opcoes_menu_ex op = retornar_op_menu_exs(escolher_opcao());
         limpar_tela();
         switch (op) {
             case PRIMEIRA_QUESTAO: {
@@ -65,7 +65,7 @@ void menu_mini_exs() {
         printf("5 - Ver o valor de β e a função f₄(x) (Ex 5)\n");
         printf("0 - Sair\n");
         printf("Escolha: ");
-        const opcoes_menu_ex op = retornar_op_menu(escolher_opcao());
+        const opcoes_menu_ex op = retornar_op_menu_exs(escolher_opcao());
         limpar_tela();
         switch (op) {
             case PRIMEIRA_QUESTAO: {
@@ -81,11 +81,11 @@ void menu_mini_exs() {
                 break;
             }
             case QUARTA_QUESTAO: {
-                exibir_totais();
+                if (!validar_operacao(quarto_ex())) exit(EXIT_FAILURE);
                 break;
             }
             case QUINTA_QUESTAO: {
-                exibir_melhor_aproximacao();
+                if (!validar_operacao(quinto_ex())) exit(EXIT_FAILURE);
                 break;
             }
             case SAIR: return;
@@ -96,6 +96,43 @@ void menu_mini_exs() {
         }
         printf("\nDigite enter para continuar!\n");
         limpar_buffer();
+        limpar_tela();
+    }
+}
+
+void menu_completo() {
+    while (true) {
+        printf("\n========================================\n");
+        printf("      TRABALHO DE CÁLCULO I       \n");
+        printf("========================================\n");
+        printf("1 - Entrar no menu das questões 1 à 5;\n");
+        printf("2 - Entrar no menu da sexta questão;\n");
+        printf("3 - Brincando com mínimos quadrados;\n");
+        printf("0 - Fechar programa;\n");
+        printf("Escolha: ");
+        const opcoes_menu_completo op = retornar_op_menu_completo(escolher_opcao());
+        limpar_tela();
+        switch (op) {
+            case MENU_EX_INICIAIS: {
+                menu_mini_exs();
+                break;
+            }
+            case MENU_EX_FINAIS: {
+                menu_sexto_ex();
+                break;
+            }
+            /*case TERCEIRA_QUESTAO: {
+                //
+                break;
+            }*/
+            case FECHAR_PROGRAMA: return;
+            default: {
+                printf("Digite um numero inteiro!\n");
+                continue;
+            }
+        }
+        printf("\nDigite enter para continuar!\n");
+        limpar_tela();
     }
 }
 
@@ -116,7 +153,7 @@ int escolher_opcao() {
     return opcao - '0';
 }
 
-opcoes_menu_ex retornar_op_menu(const int opcao) {
+opcoes_menu_ex retornar_op_menu_exs(const int opcao) {
     switch (opcao) {
         case 0: return SAIR;
         case 1: return PRIMEIRA_QUESTAO;
@@ -125,5 +162,14 @@ opcoes_menu_ex retornar_op_menu(const int opcao) {
         case 4: return QUARTA_QUESTAO;
         case 5: return QUINTA_QUESTAO;
         default: return OPCAO_INVALIDA;
+    }
+}
+
+opcoes_menu_completo retornar_op_menu_completo(const int opcao) {
+    switch (opcao) {
+        case 0: return FECHAR_PROGRAMA;
+        case 1: return MENU_EX_INICIAIS;
+        case 2: return MENU_EX_FINAIS;
+        default: return OPCAO_INCORRETA;
     }
 }

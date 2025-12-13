@@ -107,7 +107,6 @@ matriz_resultado descobrir_f3() {
 
 double funcao_1(const double t) {return pow((t - 3), 2) + 19.8;}
 double funcao_2(const double t) {return 0.0410468 * pow((t - 3), 2) + 19.8;}
-double funcao_3(const double t) {return pow((0.052346 * t), 2) + (-0.447888 * t) + 21.5;}
-double funcao_4(const double t) {return pow((0.045833 * t), 2) + (-0.318929 * t) + 20.960714;}
-
+double funcao_3(const double t) {return 0.052346 * pow(t, 2) + (-0.447888 * t) + 21.5;}
+double funcao_4(const double t) {return 0.045833 * pow(t, 2) + (-0.318929 * t) + 20.960714;}
 #undef TRY

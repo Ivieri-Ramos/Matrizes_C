@@ -172,7 +172,66 @@ matriz_resultado terceiro_ex() {
     TRY (imprimir_mat_formatada(&matB));
     FREE_ALL(&matX, &matY, &matB);
     printf("Logo, essa é a f₃(x) agora com os coeficientes encontrados:\n");
-    printf("f₃(x): 0,0523x² + -0,4479x + 21,5");
+    printf("f₃(x): 0,0523x² - 0,4479x + 21,5");
+    matriz_cleanup:
+        FREE_ALL(&matX, &matY, &matB);
+        return status;
+}
+
+matriz_resultado quarto_ex() {
+    printf("--- EXPLICITANDO Xᵀ EM f₄(x) ---\n\n");
+    matriz_resultado status = MAT_SUCESSO;
+    matriz matX, matXT;
+    INIT_ALL(&matX, &matXT);
+    TRY (criar_matriz(&matX, 6, 3));
+    TRY (vetor_para_matriz(&matX, (double[]) {
+        0, 0, 1,
+        9, 3, 1,
+        36, 6, 1,
+        81, 9, 1,
+        144, 12, 1,
+        225, 15, 1
+    }, 18));
+    TRY (criar_matriz(&matXT, matX.mat_colunas, matX.mat_linhas));
+    TRY (transpor_matriz(&matXT, &matX));
+    printf("A transposta de X em f₄(x) fica:\n");
+    TRY (imprimir_mat_formatada(&matXT));
+
+    matriz_cleanup:
+        FREE_ALL(&matX, &matXT);
+        return status;
+}
+
+matriz_resultado quinto_ex() {
+    printf("--- EXPLICANDO O VALOR DE β E A FUNÇÃO f₄(x) ---\n\n");
+    matriz matX, matY, matB;
+    matriz_resultado status = MAT_SUCESSO;
+    INIT_ALL(&matX, &matY, &matB);
+    TRY (criar_matriz(&matX, 6, 3));
+    TRY (vetor_para_matriz(&matX, (double[]) {
+        0, 0, 1,
+        9, 3, 1,
+        36, 6, 1,
+        81, 9, 1,
+        144, 12, 1,
+        225, 15, 1
+    }, 18));
+    TRY (criar_matriz(&matY, 6, 1));
+    TRY (vetor_para_matriz(&matY, (double[]) {
+        21.5,
+        19.8,
+        20.0,
+        22.2,
+        24.8,
+        25.8
+    }, 6));
+    TRY (criar_matriz(&matB, matX.mat_colunas, matY.mat_colunas));
+    TRY (calcular_min_quad(&matB, &matX, &matY));
+    printf("Essa é a matriz que representa o valor de β:\n");
+    TRY (imprimir_mat_formatada(&matB));
+    FREE_ALL(&matX, &matY, &matB);
+    printf("Logo, essa é a f₄(x) agora com os coeficientes encontrados:\n");
+    printf("f₃(x): 0,0458x² - 0,3189x + 20,9607");
     matriz_cleanup:
         FREE_ALL(&matX, &matY, &matB);
         return status;

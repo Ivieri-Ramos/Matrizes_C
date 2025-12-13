@@ -11,9 +11,18 @@ typedef enum opcoes_menu_ex {
     OPCAO_INVALIDA
 } opcoes_menu_ex;
 
+typedef enum opcoes_menu_completo {
+    FECHAR_PROGRAMA,
+    MENU_EX_INICIAIS,
+    MENU_EX_FINAIS,
+    OPCAO_INCORRETA
+} opcoes_menu_completo;
+
 void menu_sexto_ex();
 void menu_mini_exs();
 int escolher_opcao();
-opcoes_menu_ex retornar_op_menu(int opcao);
+opcoes_menu_ex retornar_op_menu_exs(int opcao);
+opcoes_menu_completo retornar_op_menu_completo(int opcao);
+void menu_completo();
 
 #endif //ALGEBRALINEAR_MENU_COMPLETO_H

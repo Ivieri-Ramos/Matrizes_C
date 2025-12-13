@@ -21,5 +21,7 @@ double calcular_total_abs(int indice_modelo);
 void primeiro_ex();
 matriz_resultado segundo_ex();
 matriz_resultado terceiro_ex();
+matriz_resultado quarto_ex();
+matriz_resultado quinto_ex();
 
 #endif //ALGEBRALINEAR_CALCULAR_DIFERENCA_H
