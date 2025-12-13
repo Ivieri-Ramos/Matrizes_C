@@ -18,5 +18,8 @@ void exibir_totais();
 void exibir_tabela_erros(tipo_erro erro_atual);
 void exibir_valores_calculados();
 double calcular_total_abs(int indice_modelo);
+void primeiro_ex();
+matriz_resultado segundo_ex();
+matriz_resultado terceiro_ex();
 
 #endif //ALGEBRALINEAR_CALCULAR_DIFERENCA_H

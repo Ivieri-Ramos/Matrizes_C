@@ -37,7 +37,7 @@ typedef struct matriz {
 void matriz_init(matriz *matriz);
 void preencher_matriz(matriz *matriz_preencher);
 void free_matriz(matriz *matriz);
-matriz_resultado imprimir_mat(const matriz *matriz_imprimir);
+matriz_resultado imprimir_mat_formatada(const matriz *matriz_imprimir);
 matriz_resultado criar_matriz(matriz *matriz, size_t linhas, size_t colunas);
 matriz_resultado soma_matriz(matriz *matriz_destino, const matriz *matriz_s1, const matriz *matriz_s2);
 matriz_resultado multiplicar_matriz(matriz *matriz_destino, const matriz *matriz_m1, const matriz *matriz_m2);
@@ -52,5 +52,6 @@ const char* retornar_mensagem(matriz_resultado result);
 bool validar_operacao(matriz_resultado result);
 void matriz_init_all(matriz *primeira, ...);
 void matriz_free_all(matriz *primeira, ...);
+matriz_resultado calcular_min_quad(matriz *matB, const matriz *matX, const matriz *matY);
 
 #endif //ALGEBRALINEAR_MATRIZES_H

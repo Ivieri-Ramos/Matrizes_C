@@ -13,7 +13,8 @@ add_executable(AlgebraLinear
         Primeiro/funcoes_mat.h
         Primeiro/respostas_trabalho.c
         Primeiro/respostas_trabalho.h
-        Primeiro/menu_completo.c)
+        Primeiro/menu_completo.c
+        Primeiro/menu_completo.h)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 

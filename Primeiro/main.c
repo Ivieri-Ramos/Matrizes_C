@@ -3,6 +3,7 @@
 #include "matrizes.h"
 #include "utils.h"
 #include "funcoes_mat.h"
+#include "menu_completo.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,6 +19,8 @@
  */
 
 int main() {
+    menu_mini_exs();
+    /*
     int opcao;
 
     do {
@@ -54,7 +57,6 @@ int main() {
         }
 
     } while (opcao != 0);
-    /*
     setlocale(LC_ALL, "Portuguese.UTF-8");
     int opcao;
     do{

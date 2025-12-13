@@ -49,7 +49,7 @@ matriz_resultado descobrir_f4() {
     TRY (criar_matriz(&matB, matXtX_inv.mat_linhas, matXtY.mat_colunas));
     TRY (multiplicar_matriz(&matB, &matXtX_inv, &matXtY));
     //e por fim encontramos a matriz B usando o resultado da inversa vezes a multiplicação que acabamos de encontrar
-    TRY (imprimir_mat(&matB)); //imprimimos o resultado e então damos free no resto
+    TRY (imprimir_mat_formatada(&matB)); //imprimimos o resultado e então damos free no resto
     /*
      * note que durante o processo, sempre devemos criar a matriz antes
      * e delimitarmos as suas linhas e colunas, esse mesmo processo é executado também
@@ -99,7 +99,7 @@ matriz_resultado descobrir_f3() {
     free_matriz(&matY);
     TRY (criar_matriz(&matB, matXtX_inv.mat_linhas, matXtY.mat_colunas));
     TRY (multiplicar_matriz(&matB, &matXtX_inv, &matXtY));
-    TRY (imprimir_mat(&matB));
+    TRY (imprimir_mat_formatada(&matB));
     matriz_cleanup:
         FREE_ALL(&matX, &matXT, &matY, &matXtX, &matXtX_inv, &matXtY, &matB);
         return status;

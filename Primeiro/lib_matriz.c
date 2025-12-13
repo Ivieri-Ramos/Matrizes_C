@@ -6,16 +6,76 @@
 #include <math.h>
 #include <stdarg.h>
 
+#define LARGURA_NUMERO 10   // Espaço reservado para o valor numérico
+#define CASAS_DECIMAIS 4    // Precisão
+// Espaço total da célula = 1 (espaço esq) + LARGURA + 1 (espaço dir)
+#define LARGURA_CELULA (1 + LARGURA_NUMERO + 1)
 #define INTERVALO_ZERO 1e-9 //isso e para que quando for 0,0000000001 ele valide corretamente
 
-matriz_resultado imprimir_mat(const matriz *matriz_imprimir) { //essa função só imprime a matriz
-    if (matriz_imprimir -> dados == NULL) return MAT_ERRO_PONTEIRO_NULO;
-    for (size_t i = 0; i < matriz_imprimir -> mat_linhas; i++) {
-        for (size_t j = 0; j < matriz_imprimir -> mat_colunas; j++) {
-            printf("%.6lf ", matriz_imprimir -> dados[i][j]);
+#define IMPRIMIR_LINHA_DIVISORIA() { \
+printf("     +"); \
+for (size_t k = 0; k < colunas; k++) { \
+for(int L=0; L < LARGURA_CELULA; L++) printf("-"); \
+printf("+"); \
+} \
+printf("\n"); \
+}
+
+#define TRY(func) \
+if ((status = (func)) != MAT_SUCESSO) goto matriz_cleanup
+
+matriz_resultado imprimir_mat_formatada(const matriz *matriz_imprimir) {
+    if (matriz_imprimir == NULL || matriz_imprimir->dados == NULL) {
+        return MAT_ERRO_PONTEIRO_NULO;
+    }
+
+    size_t linhas = matriz_imprimir->mat_linhas;
+    size_t colunas = matriz_imprimir->mat_colunas;
+
+    printf("\n");
+
+    // --- 1. CABEÇALHO DAS COLUNAS (Índices Centralizados) ---
+    // Margem esquerda para alinhar com a coluna de índices de linha
+    // " 001 |" ocupa 6 caracteres (espaço + 3 digitos + espaço + pipe)
+    printf("      ");
+
+    char buffer_indice[20]; // Buffer temporário para converter o número em texto
+
+    for (size_t j = 0; j < colunas; j++) {
+        // Converte o índice para string para saber o tamanho exato (ex: "1" tem len 1, "10" tem len 2)
+        sprintf(buffer_indice, "%zu", j + 1);
+        const size_t len = strlen(buffer_indice);
+
+        // Matemática da centralização
+        const int espaco_livre = LARGURA_CELULA - len;
+        const int pad_esq = espaco_livre / 2;
+        const int pad_dir = espaco_livre - pad_esq;
+
+        // Imprime: Espaços Esq + Indice + Espaços Dir + Espaço separador visual
+        // O último espaço é para alinhar com o pipe '|' da linha de baixo
+        printf("%*s%s%*s ", pad_esq, "", buffer_indice, pad_dir, "");
+    }
+    printf("\n");
+
+    IMPRIMIR_LINHA_DIVISORIA(); // Topo da tabela
+
+    // --- 2. CORPO DA MATRIZ ---
+    for (size_t i = 0; i < linhas; i++) {
+
+        // Índice da Linha (Ex: "   1 |")
+        printf(" %3zu |", i + 1);
+
+        for (size_t j = 0; j < colunas; j++) {
+            // Imprime o dado: espaço + numero + espaço + pipe
+            // O espaço extra no final (antes do |) vem do formato "%*. *lf "
+            printf(" %*.*lf |", LARGURA_NUMERO, CASAS_DECIMAIS, matriz_imprimir->dados[i][j]);
         }
         printf("\n");
+
+        IMPRIMIR_LINHA_DIVISORIA(); // Linha divisória entre dados
     }
+    printf("\n");
+
     return MAT_SUCESSO;
 }
 
@@ -328,3 +388,43 @@ void matriz_free_all(matriz *primeira, ...) {
     }
     va_end(args);
 }
+
+matriz_resultado calcular_min_quad(matriz *matB, const matriz *matX, const matriz *matY) {
+    if (matX -> dados == NULL || matY -> dados == NULL || matB -> dados == NULL) {
+        return MAT_ERRO_PONTEIRO_NULO;
+    }
+    matriz matXT, matXtX, matXtX_inv, matXtY;
+    INIT_ALL(&matXT, &matXtX, &matXtX_inv, &matXtY);
+    matriz_resultado status = MAT_SUCESSO;
+    TRY (criar_matriz(&matXT, matX -> mat_colunas, matX -> mat_linhas));
+    TRY (transpor_matriz(&matXT, matX));
+    //aqui foi criado a matriz XT, ou seja, a transposta de X
+    TRY (criar_matriz(&matXtX, matXT.mat_linhas, matX -> mat_colunas));
+    TRY (multiplicar_matriz(&matXtX, &matXT, matX));
+    //aqui foi criado o resultado de XT vezes X, ou seja, criamos uma matriz 3x3
+    TRY (criar_matriz(&matXtX_inv, matXtX.mat_linhas, matXtX.mat_colunas));
+    TRY (criar_inversa(&matXtX_inv, &matXtX));
+    free_matriz(&matXtX);
+    //aqui foi criado a inversa de XT vezes X, ou seja, a primeira_multiplicacao
+    TRY (criar_matriz(&matXtY, matXT.mat_linhas, matY -> mat_colunas));
+    TRY (multiplicar_matriz(&matXtY, &matXT, matY));
+    free_matriz(&matXT);
+    //aqui foi criado o resultada da transposta de X vezes a matriz Y
+    TRY (multiplicar_matriz(matB, &matXtX_inv, &matXtY));
+    //e por fim encontramos a matriz B usando o resultado da inversa vezes a multiplicação que acabamos de encontrar
+    /*
+     * note que durante o processo, sempre devemos criar a matriz antes
+     * e delimitarmos as suas linhas e colunas, esse mesmo processo é executado também
+     * em f3(x), só que de uma forma mais simples, já que temos menos variáveis
+     */
+    matriz_cleanup:
+        FREE_ALL(&matXT, &matXtX, &matXtX_inv, &matXtY);
+        return status;
+}
+
+#undef LARGURA_CELULA
+#undef LARGURA_NUMERO
+#undef INTERVALO_ZERO
+#undef IMPRIMIR_LINHA_DIVISORIA
+#undef CASAS_DECIMAIS
+#undef TRY

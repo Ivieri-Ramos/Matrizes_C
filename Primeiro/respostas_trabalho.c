@@ -1,8 +1,12 @@
 #include "respostas_trabalho.h"
+#include "matrizes.h"
 
 #include <stdio.h>
 #include <math.h>
 #include <float.h>
+
+#define TRY(func) \
+if ((status = (func)) != MAT_SUCESSO) goto matriz_cleanup
 
 const dados_observados dados_funcoes[] = {
     0, 21.5,
@@ -35,7 +39,7 @@ double calcular_total_abs(const int indice_modelo) {
     return total;
 }
 
-// Opção 1: Mostra apenas os valores calculados
+// opção 1: mostra apenas os valores calculados
 void exibir_valores_calculados() {
     printf("\n--- COMPARACAO DE VALORES (f_i(t)) ---\n");
     printf("%-5s | %-8s", "t", "N(t)");
@@ -53,7 +57,7 @@ void exibir_valores_calculados() {
     }
 }
 
-// Opção 2 e 3: Função genérica para exibir erros (Evita duplicar código)
+// opção 2 e 3: função genérica para exibir erros (usa-se um enum para não ter DRY)
 void exibir_tabela_erros(const tipo_erro erro_atual) {
     char *titulo = (erro_atual == ERRO_ABSOLUTO) ? "ERRO ABSOLUTO |N(t) - f(t)|" : "ERRO RELATIVO (%)";
 
@@ -78,7 +82,7 @@ void exibir_tabela_erros(const tipo_erro erro_atual) {
     }
 }
 
-// Opção 4: Totais
+// opção 4: totais
 void exibir_totais() {
     printf("\n--- TOTAIS ACUMULADOS ---\n");
     printf("%-10s | %-15s | %-15s\n", "Funcao", "Total Abs.", "Total Rel.");
@@ -96,7 +100,7 @@ void exibir_totais() {
     }
 }
 
-// Opção 5: Conclusão
+// opção 5: conclusão
 void exibir_melhor_aproximacao() {
     int melhor_id = -1;
     double menor_erro = DBL_MAX;
@@ -111,3 +115,67 @@ void exibir_melhor_aproximacao() {
     printf("A melhor aproximacao e a FUNCAO f%d(t)\n", melhor_id);
     printf("Erro Total Absoluto: %.4f\n", menor_erro);
 }
+
+void primeiro_ex() {
+    printf("--- EXPLICITANDO f₂(x) ---\n\n");
+    printf("Como visto no PDF, o valor da variável c ficou 0,0410468, portanto:\n");
+    printf("f₂(x): 0,0410468(x - 3)² + 19,8\n");
+}
+
+matriz_resultado segundo_ex() {
+    printf("--- EXPLICITANDO Xᵀ EM f₃(x) ---\n\n");
+    matriz_resultado status = MAT_SUCESSO;
+    matriz matX, matXT;
+    INIT_ALL(&matX, &matXT);
+    TRY (criar_matriz(&matX, 5, 2));
+    TRY (vetor_para_matriz(&matX, (double[]) {
+        9, 3,
+        36, 6,
+        81, 9,
+        144, 12,
+        225, 15,
+    }, 10));
+    TRY (criar_matriz(&matXT, matX.mat_colunas, matX.mat_linhas));
+    TRY (transpor_matriz(&matXT, &matX));
+    printf("A transposta de X em f₃(x) fica:\n");
+    TRY (imprimir_mat_formatada(&matXT));
+
+    matriz_cleanup:
+        FREE_ALL(&matX, &matXT);
+        return status;
+}
+
+matriz_resultado terceiro_ex() {
+    printf("--- EXPLICANDO O VALOR DE β E A FUNÇÃO f₃(x) ---\n\n");
+    matriz matX, matY, matB;
+    matriz_resultado status = MAT_SUCESSO;
+    INIT_ALL(&matX, &matY, &matB);
+    TRY (criar_matriz(&matX, 5, 2));
+    TRY (vetor_para_matriz(&matX, (double[]) {
+        9, 3,
+        36, 6,
+        81, 9,
+        144, 12,
+        225, 15,
+    }, 10));
+    TRY (criar_matriz(&matY, 5, 1));
+    TRY (vetor_para_matriz(&matY, (double[]) {
+    -1.7,
+    -1.5,
+    0.7,
+    3.3,
+    4.3
+    }, 5));
+    TRY (criar_matriz(&matB, matX.mat_colunas, matY.mat_colunas));
+    TRY (calcular_min_quad(&matB, &matX, &matY));
+    printf("Essa é a matriz que representa o valor de β:\n");
+    TRY (imprimir_mat_formatada(&matB));
+    FREE_ALL(&matX, &matY, &matB);
+    printf("Logo, essa é a f₃(x) agora com os coeficientes encontrados:\n");
+    printf("f₃(x): 0,0523x² + -0,4479x + 21,5");
+    matriz_cleanup:
+        FREE_ALL(&matX, &matY, &matB);
+        return status;
+}
+
+#undef TRY
